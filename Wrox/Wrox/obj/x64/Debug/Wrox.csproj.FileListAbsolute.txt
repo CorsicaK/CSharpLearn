@@ -1,0 +1,5 @@
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\Wrox\Wrox\bin\x64\Debug\Wrox.dll
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\Wrox\Wrox\bin\x64\Debug\Wrox.pdb
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\Wrox\Wrox\obj\x64\Debug\Wrox.csprojResolveAssemblyReference.cache
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\Wrox\Wrox\obj\x64\Debug\Wrox.dll
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\Wrox\Wrox\obj\x64\Debug\Wrox.pdb
