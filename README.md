@@ -419,4 +419,74 @@ Console.WriteLine("{0:#.00}",d);
 
 ## 对象和类型
 
-#### 创建和使用类
+#### 类和结构
+
+类和结构都是创建对象的模板，区别在于它们在内存中的存储方式、访问方式（类是存储在堆（heap）上的<font color=blue>引用类型</font>，而结构是存储在栈上的<font color = blue>值类型</font>）和它们的一些特征（如结构不支持继承）
+
+较小的数据类型使用结构可以提高性能，在语法上：类使用关键字class，结构使用关键字struct。都是用关键字new来声明示例
+
+```c#
+//定义类
+class ClassName
+{
+	...
+}
+//定义结构
+struct StructName
+{
+	...
+}
+//声明实例
+ClassName myClass = new ClassName();
+StructName myStruct = new StructName();
+```
+
+#### 类
+
+成员的可访问性：public 、protected 、internal 、private
+
+##### 数据成员
+
+- 数据成员是包含类的数据——字段、常量和事件的成员。数据成员可以是静态数据。*类成员总是实例成员，除非用static进行显式的声明*
+
+- 实例化对象后，使用Object.FieldName来访问字段
+
+- 常量与类的关联方式和变量与类的关联方式相同。关键字const，声明为public即可在类的外部访问它
+
+- 事件是类的成员，在发生某些行为时，它可以让对象通知调用方
+
+##### 函数成员
+
+提供了操作类中数据的某些方法，包括方法、属性、构造函数和终结器（finalizer）、运算符以及索引器
+
+​	属性：访问方式与访问类的公共字段相似
+
+​	构造函数：与所属类同名，且不能有返回类型，用于初始化字段的值
+
+​	终结器：类似于构造函数，在CLR检测到不在需要某个对象时调用它，名称与类相同，前面有个“~”号
+
+​	运算符：
+
+​	索引器：允许对象以数组或集合的方式进行索引
+
+- 方法：默认为实例成员，使用static可以定义为静态方法
+
+  - 声明
+
+    ```c#
+    //如果没有返回值则返回类型指定为void
+    [modifiers] return_type MethodName([parameters])
+    {
+    	//methods body
+    }
+    //方法可以包含任意多条return
+    public bool IsPositive(int value)
+    {
+        if(value < 0)
+            return false;
+        return true;
+    }
+    ```
+
+  - 调用
+
