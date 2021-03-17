@@ -1,0 +1,6 @@
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap3\bin\Debug\Chap3.exe.config
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap3\bin\Debug\Chap3.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap3\bin\Debug\Chap3.pdb
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap3\obj\Debug\Chap3.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap3\obj\Debug\Chap3.pdb
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap3\obj\Debug\Chap3.csprojResolveAssemblyReference.cache

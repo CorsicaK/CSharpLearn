@@ -490,3 +490,353 @@ StructName myStruct = new StructName();
 
   - 调用
 
+    > TestCode\Chap3\MainEntryPoint.cs
+
+  - 给方法传递参数：通过引用或者值传递
+
+    - 引用传递：被调用的方法得到的是这个变量，即指向内存中变量的指针。在方法内部对变量进行的任何改变在方法退出后仍旧有效
+    - 值传递：被调用的方法得到的是变量的一个相同副本，方法退出后，对变量的修改会消失
+    - 若无特别指定，所有的引用类型都通过引用传递，所有的值类型都通过值传递
+
+    > TestCode\Chap3\MainEntryPoint.cs
+
+    - 字符串虽为引用类型，但是因为字符串是不可改变的，如果改变字符串的值就会创建一个全新的字符串，所以字符串无法采用一般的引用类型的行为方式
+
+  - ref参数：迫使值参数通过引用传递给方法，带有ref关键字则该方法对变量所做的任何改变都会影响原始对象的值
+
+    <font color = red size=4>无论是值传递还是引用传递，在传递给方法之前，任何变量都必须初始化</font>
+
+    ```C#
+    static void SomeFunction(int[] ints,ref int i)
+    {
+    	ints[0] = 100;
+    	i = 100;
+    }
+    //调用时也需要添加ref
+    SomeFunction(ints,ref i);
+    ```
+
+  - out参数：在方法的输入参数前加out，传递给该方法的变量可以不初始化
+
+    ```c#
+    static void SomeFunction(out inti)
+    {
+    	i = 100;
+    }
+    public static int Main()
+    {
+    	int i;//不初始化
+    	//调用时也要加out
+    	SomeFunction(out i);
+    	...
+    }
+    ```
+
+  - 命名参数
+
+    参数一般按定义的顺序传递给方法，命名参数允许按任意顺序传递
+
+    ```C#
+    string FullName(string firstName,string lastName)
+    {
+    	return firstName+""+lastName;
+    }
+    //调用
+    FullName("John"."Doe");
+    FullName(lastName:"Doe",firstName:"John");
+    ```
+
+  - 可选参数
+
+    可选参数必须提供默认值，且必须是方法定义的最后参数
+
+  - 方法的重载：同名但不同参数或者类型
+
+    ```C#
+    class ResultDisplayer
+    {
+     void DisplayResult(string result)
+     {
+     	//方法体
+     }
+     void DisplayResult(int result)
+     {
+     	//方法体
+     }
+     void DisplayResult(int result1,int result2)
+     {
+     	//方法体
+     }
+    }
+    ```
+
+    - 注意两个方法不能仅在返回类型上有区别
+    - 注意两个方法不能仅根据参数是声明为ref还是out来区分
+
+- 属性property：一个方法或一对方法
+
+  ```c#
+  public string SomeProperty
+  {
+  	get
+  	{
+  		return ...;
+  	}
+      //省略set即创建只读属性
+  	set
+  	{
+  		...
+  	}
+  }
+  ```
+
+  - 属性的访问修饰符
+
+  ```c#
+  private string _name;
+  //允许给属性的get和set访问器设置不同的访问修饰符
+  //get和set必须有一个具备属性的访问级别
+  public string Name
+  {
+  	//get访问器不能设置为protected
+  	get
+  	{
+  		return _name;
+  	}
+  	private set
+  	{
+  		_name = value;
+  	}
+  }
+  ```
+
+  - 自动实现的属性
+
+  ```C#
+  //不需要private int age;编译器会自动创建
+  //必须有两个访问器
+  public int Age{get; set;}
+  public int Age{get; private set;}
+  ```
+
+  - 构造函数：与类同名但没有返回类型
+
+  ```c#
+  public class MyClass
+  {
+      //若不提供构造函数，系统会在后台默认创建
+      public MyClass()
+      {
+      }
+      //构造函数重载，与其他方法规则相同
+      //若定义了有参数的构造函数，系统就不会创建默认的构造函数
+      public MyClass(int x,int y)
+      {
+      }
+      //一般使用this关键字区分成员字段和同名的参数
+      //构造函数可以定义为private或protected，这样不相关的类就不能访问它们
+      private int number;
+      private MyClass(int number)
+      {
+          this.number=number;
+      }
+  }
+  ```
+
+  （1）静态构造函数：无参数，只执行一次，只能有一个
+
+  ```
+  calss MyClass
+  {
+  	//静态构造函数只能访问类的静态成员，不能访问类的实例成员
+  	//无参数的实例构造函数与静态构造函数可以在同一个类中同时定义
+  	static MyClass()
+  	{
+  		...
+  	}
+  	...
+  }
+  ```
+
+  （2）从构造函数中调用其他构造函数
+
+  构造函数初始化器可以包含对同一个类的另一个构造函数的调用，也可以包含<font face="宋体" color=red> 直接基类</font>的构造函数的调用（此时用<font color=red>base</font>替代this），初始化构造器不能有多个调用
+
+  ```C#
+  class Car
+  {
+  	private string description;
+  	private uint nWheels;
+  	public Car(string description, uint nWhee1s)
+  	{
+  		this.description = description;
+  		this.nWheels = nwheels;
+  	}
+  	public Car(string description): this (description, 4)
+  	{
+  	}
+  	...
+  }
+  ...
+  Car myCar = newCar("Proton Persona");
+  ```
+
+##### 只读字段
+
+readonly关键字，允许把一个字段设置成常量，但是需要执行一些计算以确定它的初始值
+
+```c#
+public class DocumentEditor
+{
+	//如果要把只读字段设置成静态，就必须显式的声明它
+	public static readonly unit MaxDocuments;
+	static DocumentEditor()
+	{
+		//可以在构造函数中给只读字段赋值，但是不能在别的地方赋值
+		MaxDocuments = DoSomthingOutMaxNumber();
+	}
+}
+```
+
+#### 匿名类型
+
+var关键字，用于表示隐式类型化的变量
+
+var和new关键字一起使用时可以创建匿名类型，它是一个继承自Object且没有与名称的类
+
+`var captain = new {FirstName="James",MiddleName="T",lastName="Krik"};`
+
+如果设置的值来自另一个类，且该类有一个实例（如person）则可以简化初始化器
+
+`var doctor =new {person.FirstName,person.MiddleName,person.lastName};`
+
+#### 结构（主要用于小的数据结构）
+
+为结构定义函数与为类定义函数完全相同
+
+```c#
+struct Dimensions
+{
+	public double Length;
+	public double Width;
+	public Dimensions(double length,double width)
+	{
+		Length = length;
+		Width = width;
+	}
+	public double Digonal
+	{
+		get
+		{
+			return Math.Sqrt(Length*Length+Width*Width);
+		}
+	}
+}
+```
+
+- <font color = red >结构是值类型</font>，但在语法上常当做类来处理
+
+  ```c#
+  //结构在使用前，所有的元素都必须进行初始化
+  Dimensions point = new Dimensions();
+  point.Length = 3;
+  point.Width = 6;
+  ```
+
+- 结构不支持继承，唯一的例外是对应的结构最终派生自类System.Object
+
+- 结构的构造函数与类定义构造函数相同，**但是不允许定义无参的构造函数**
+
+#### 弱引用
+
+使用WeakReference类创建，在垃圾回收器(GC.Collection())运行时就会回收对象并释放内存
+
+`WeakReference mathReference = new WeakReference(new MathTest())`;
+
+#### 部分类
+
+partial关键字，允许把类、结构、方法或接口放在多个文件中
+
+```c#
+//在嵌套类型中可以嵌套部分类
+//BigClassPart1.cs
+[CustomAttribute]
+partial class TheBigClass:TheBigBaseClass,IBigClass
+{
+	public void MethodOne()
+	{
+	...
+	}
+}
+//BigClassPart2.cs
+[AnotherAttribute]
+partial class TheBigClass:IOtherBigClass
+{
+	public void MethodTwo()
+	{
+	...
+	}
+}
+//以上相当于
+[CustomAttribute]
+[AnotherAttribute]
+partial class TheBigClass:TheBigBaseClass,IBigClass,IOtherBigClass
+{
+    public void MethodOne(){}
+    public void MethodTwo(){}
+}
+```
+
+如果声明类时使用public、private、protected、internal、abstract、sealed、new、一般约束 关键字，**这些关键字必须应用于同一个类的所有部分 **
+
+#### 静态类
+
+静态类只含静态方法和属性，它不能创建实例，使用static关键字
+
+```c#
+//定义静态类
+static class StaticUtilities
+{
+	public static void HelperMethod()
+	{
+		...
+	}
+}
+//调用静态类的方法,不需要该类的对象
+StaticUtilities.HelperMethod();
+```
+
+#### Object类
+
+每个.NET类都派生自System.Object类，结构总是派生自System.ValueType，而System.ValueType派生自System.Object类。因此它们可以访问Object定义的许多**公有的和受保护的成员方法**
+
+##### System.Object()方法
+
+- ToString()方法：获取数据字符串，但是数据格式化没有多种选择。它是一个虚方法
+
+  > 重写举例：Chap3中的MainEntryPoint.cs
+
+- GetHashCode()方法：用于确定对象放在结构（映射，也称散列表或者字典）的什么位置
+- Equals()和ReferenceEquals()方法：比较对象相等性的不同方法
+- Finalize()方法：在引用对象作为垃圾被回收以清理资源时调用它
+- GetType()方法：返回从System.Type派生类的一个实例，这个对象可以提供对象成员所属类的更多信息，包括基本类型、方法、属性等
+- MemberwiseClone()方法：该方法不是虚方法所以不能重写，它是复制对象并返回对副本的一个引用，得到的副本是一个浅表复制，即它复制了类中的所有值类型
+
+#### 扩展方法
+
+是一个静态方法，它允许改变一个类，但不需要该类的源代码，适用于不能直接修改源代码但是需要扩展方法的情况
+
+```c#
+public static class MoneyExtension
+{
+	public static void AddToAmount(this Money money,decimal amountToAdd)
+	{
+		money.Amount += amountToAdd;
+	}
+}
+//调用
+money.AddToAmount();
+```
+
+
+
