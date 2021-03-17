@@ -838,5 +838,289 @@ public static class MoneyExtension
 money.AddToAmount();
 ```
 
+## 继承
+
+#### 继承的类型
+
+##### 实现继承和接口继承
+
+实现继承：表示一个类型派生于一个基类型，它拥有该基类型的**所有成员字段和函数**
+
+接口继承：表示一个类型只继承了函数的签名，没有继承任何实现代码
+
+##### 多重继承
+
+不支持多重实现继承，但支持<font color=red>多重接口继承</font>。即C#可以派生自另一个类和任意多个接口
+
+##### 结构和类
+
+- 结构总是派生自System.ValueType，它们还可以派生自任意多个接口
+- 类总是派生自System.Object或用户选择的另一个类，它们还可以派生自任意多个接口
+
+#### 实现继承
+
+```c#
+//类同时派生自一个类和多个接口
+public class MyDerivedClass: MyBaseClass,IInterface1,IInterface2
+{
+	...
+}
+//结构派生自接口
+public struct MyDerivedStruct:IInterface1,IInterface2
+{
+	...
+}
+```
+
+如果要引用Object类，可以使用object关键字
+
+##### 虚方法
+
+将一个基类函数声明为virtual，就可以在任何派生类中重写该函数，属性也可声明为<font color=red>virtual</font>
+
+在派生类的函数重写另一个函数是，使用<font color= red>override</font>
+
+<font color = red>成员字段和静态函数都不能声明为virtual</font>
+
+```C#
+class MyBaseClass
+{
+    private string foreName;
+    //虚方法
+    public virtual string VirtualMethod()
+    {
+        return "This method is virtual and defined in MyBaseClass";
+    }
+    //虚属性
+    public virtual string ForeName
+    {
+        get{ return foreName;}
+        set{ foreName = value;}
+    }
+}
+...
+//重写虚方法
+class MyDerivedClass:MyBaseClass
+{
+    public override string VirtualMethod()
+    {
+        return "This method is an override defined in MyDerivedClass."
+    }
+}
+```
+
+##### 隐藏方法
+
+如果签名相同的方法在基类和派生类中都进行了声明，但该方法没有分别声明为virtual和override，派生类方法就会隐藏基类方法，此时使用<font color=red>new</font>关键字
+
+```C#
+class MyDerivedClass:HisBaseClass
+{
+	public new int MyGroovyMethod()
+    {
+        return 0;
+    }
+}
+```
+
+##### 调用函数的基类版本
+
+语法：base.<MethodName>(),用于从派生类中调用方法的基类版本，可以用这个语法调用基类中的任何方法，不必从同一个方法的重载中调用它
+
+```C#
+class CustomerAccount
+{
+    public virtual decimal CalculatePrice()
+    {
+        return 0;
+    }
+}
+class GoadAccount:CustomerAccount
+{
+    public override decimal CalculatePrice()
+    {
+        return base.CalculatePrice() * 0.9M;
+    }
+}
+```
+
+##### 抽象类和抽象函数
+
+关键字<font color=red>abstract</font>。抽象类不能实例化，抽象函数不能直接实现，**必须在非抽象的派生类中重写**
+
+抽象函数本身是虚拟的，<font color=red>不需要加virtual</font>
+
+```C#
+abstract class Building
+{
+	public abstract decimal CalculateHeatingCost();
+}
+```
+
+##### 密封类和密封方法
+
+关键字<font color=red>sealed</font>。**类不能被继承，方法不能被重写**
+
+```C#
+//密封类
+sealed class FinalClass
+{ ... }
+//密封方法
+//要在方法或属性上使用sealed关键字，必须先从基类上把它声明为要重写的方法或属性
+class MyClass:MyClassBase
+{
+    public sealed override void FinalMethod()
+    {
+        ...
+    }
+}
+```
+
+##### 派生类的构造函数
+
+构造函数的执行顺序，最先调用的总是基类的构造函数，即派生类的构造函数可以在执行过程中调用它可以访问的任何基类方法、属性和任何其他成员
+
+- 在层次结构中添加无参数的构造函数
+
+```C#
+public abstract class GenericCustomer
+{
+	private string name;
+    //base表示基类的构造函数而不是调用当前类的构造函数，（）内无参数表示必须调用无参数的构造函数
+    public GenericCustomer():base()
+    {
+        name = "<no name>";
+    }
+}
+```
+
+- 在层次结构中添加带参数的构造函数
+
+```C#
+class Nervermore60Customer:GenericCustomer
+{
+    private uint highCostMinutesUsed;
+    private string referrerName;
+    //1.本身不能初始化name字段，而是把它传递给基类
+    //2.假定还需传递别的信息(referrerName是一个需要声明的变量)
+    //3.检查事件链后认为需要带一个字符串参数的构造函数，因此加上默认referrerName:"<none>"
+    public Nervermore60Customer(string name,string referrerName)
+        :base(name,"<none")
+    {
+        this.referrerName = referrerName;
+    }
+}
+//实例化,用于检查事件链
+GenericCustomer customer = new Nervermore60Customer("Arabel Jones");
+```
+
+#### 修饰符
+
+##### 可见性修饰符
+
+| 修饰符             | 应用于                                          | 说明                                               |
+| ------------------ | ----------------------------------------------- | -------------------------------------------------- |
+| public             | 所有类型或成员                                  | 任何代码均可以访问该项                             |
+| protected          | 类型和内嵌类型的所有<font color=red>成员</font> | 只有<font color= red>派生</font>的类型能访问该项   |
+| internal           | 所有类型或成员                                  | 只能在包含它的程序集中访问该项                     |
+| private            | 类型和内嵌类型的所有<font color=red>成员</font> | 只能在它所属的类型中访问该项                       |
+| protected internal | 类型和内嵌类型的所有<font color=red>成员</font> | 只能在包含它的程序集和派生类型的任何代码中访问该项 |
+
+不能把类型定义为protected、private、protected internal，因为这些修饰符对于包含在名称空间中的类型没有任何意义，但是可以用这些修饰符定义嵌套的类型
+
+```C#
+public class OuterClass
+{
+    //因为内部的类型总是可以访问外部类型的所有成员
+    protected class InnerClass
+    {
+        ...
+    }
+}
+```
+
+#####  其他修饰符
+
+| 修饰符   | 应用于         | 说明                                                         |
+| -------- | -------------- | ------------------------------------------------------------ |
+| new      | 函数成员       | 成员用相同的签名隐藏继承的成员                               |
+| static   | 所有成员       | 成员不作用于类的具体实例                                     |
+| virtual  | 仅函数成员     | 成员可以由派生类重写                                         |
+| abstract | 仅函数成员     | 虚拟成员定义了成员的签名，但没有提供实现代码                 |
+| override | 仅函数成员     | 成员重写了继承的虚拟或抽象成员                               |
+| sealed   | 类、方法和属性 | 对于类，不能继承自密封类；对于属性和方法，成员重写已继承的虚拟成员，但任何派生类中的任何成员都不能重写该成员。该成员必须与override一起使用 |
+| extern   | 仅静态方法     | 成员在外部用另一种语言实现                                   |
+
+#### 接口
+
+接口只能包含方法、属性、索引器和事件的声明
+
+不能实例化接口，接口既不能有构造函数也不能有字段
+
+接口定义不允许声明关于成员的修饰符，接口成员总是公有的
+
+##### 定义和实现接口
+
+接口名称通常以 **I** 开头
+
+> 接口定义：Chap4中的IBankAccount.cs
+
+从接口中派生完全独立于从类中派生
+
+派生类必须实现接口的所有方法
+
+> 接口实现：Chap4中的GoldAccount.cs和SaverAccount.cs
+
+接口引用完全可以看成类引用，但接口引用的强大之处：它可以引用任何实现该接口的类
+
+```C#
+IBankAccount[] accounts = new IBankAccount[2];
+accounts[0] = new SaverAccount();
+accounts[1] = new GoldAccount();
+```
+
+##### 派生的接口
+
+接口可以彼此继承，其方式与类的继承方式相同
+
+派生的接口拥有被派生接口的所有成员和自己的成员
+
+> 接口派生：Chap4中的ITransferBankAccount.cs
+>
+> 定义派生自派生接口的类：Chap4中的CurrentAccount.cs
+
+```C#
+public interface ITransferBankAccount:IBankAccount
+{
+	bool TransferTo(IBankAccount destination,decimal amount);
+}
+```
+
+## 泛型
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
