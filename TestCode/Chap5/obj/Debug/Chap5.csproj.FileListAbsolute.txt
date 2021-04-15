@@ -1,0 +1,2 @@
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5\bin\Debug\Chap5.exe.config
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5\obj\Debug\Chap5.csprojResolveAssemblyReference.cache

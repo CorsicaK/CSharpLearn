@@ -1,0 +1,6 @@
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.GenericMethods\bin\Debug\Chap5.GenericMethods.exe.config
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.GenericMethods\bin\Debug\Chap5.GenericMethods.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.GenericMethods\bin\Debug\Chap5.GenericMethods.pdb
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.GenericMethods\obj\Debug\Chap5.GenericMethods.csprojResolveAssemblyReference.cache
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.GenericMethods\obj\Debug\Chap5.GenericMethods.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.GenericMethods\obj\Debug\Chap5.GenericMethods.pdb

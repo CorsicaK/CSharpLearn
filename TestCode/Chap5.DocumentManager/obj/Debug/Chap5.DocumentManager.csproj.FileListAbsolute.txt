@@ -1,0 +1,6 @@
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.DocumentManager\bin\Debug\Chap5.DocumentManager.exe.config
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.DocumentManager\bin\Debug\Chap5.DocumentManager.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.DocumentManager\bin\Debug\Chap5.DocumentManager.pdb
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.DocumentManager\obj\Debug\Chap5.DocumentManager.csprojResolveAssemblyReference.cache
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.DocumentManager\obj\Debug\Chap5.DocumentManager.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.DocumentManager\obj\Debug\Chap5.DocumentManager.pdb

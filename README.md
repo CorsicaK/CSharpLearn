@@ -91,6 +91,7 @@ Console.WriteLine(y.Value); //30
 y.Value = 50;
 Console.WriteLine(x.Value); //50
 ```
+
 如果变量是一个引用，可以把值设置成null，表示不引用任何对象
 
 ```c#
@@ -113,7 +114,9 @@ y = null;
   ```
 
 - decimal类型：精度更高的浮点数
+
 - bool类型： true和false，**不能和整数值0或1显示转换**
+
 - 字符类型：char，字面量用**’‘**括起来，用“”会出现错误
 
 ##### 预定义的引用类型
@@ -817,9 +820,13 @@ StaticUtilities.HelperMethod();
   > 重写举例：Chap3中的MainEntryPoint.cs
 
 - GetHashCode()方法：用于确定对象放在结构（映射，也称散列表或者字典）的什么位置
+
 - Equals()和ReferenceEquals()方法：比较对象相等性的不同方法
+
 - Finalize()方法：在引用对象作为垃圾被回收以清理资源时调用它
+
 - GetType()方法：返回从System.Type派生类的一个实例，这个对象可以提供对象成员所属类的更多信息，包括基本类型、方法、属性等
+
 - MemberwiseClone()方法：该方法不是虚方法所以不能重写，它是复制对象并返回对副本的一个引用，得到的副本是一个浅表复制，即它复制了类中的所有值类型
 
 #### 扩展方法
@@ -1098,7 +1105,282 @@ public interface ITransferBankAccount:IBankAccount
 
 ## 泛型
 
+#### 泛型概述
 
+##### 特性1：性能
+
+值类型使用非泛型集合类，在把值类型转换为引用类型和把引用类型转换为值类型时，需要进行装箱和拆箱操作，很耗性能，遍历时损耗较大
+
+```C#
+//使用int类型的泛型List<T>代替装箱拆箱的遍历操作
+var list = new List<int>();
+list.Add(44);
+int i1 = list[0];//无需拆箱，若拆箱 int i1 = (int)list[0];
+foreach(int i2 in list)
+{
+    ...
+}
+```
+
+##### 特性2：类型安全
+
+在泛型类List<T>中，泛型类型T定义了允许使用的类型。如有了List<int>的定义，就只能把整数类型添加到集合中。
+
+```C#
+var list = new List<int>();
+list.Add(44);
+list.Add("mystring");//编译错误，参数无效
+list.Add(new MyClass());//编译错误，参数无效
+```
+
+##### 特性3：二进制代码的重用
+
+泛型类可以定义一次，并且可以用许多不同的类型实例化
+
+```C#
+var list = new List<int>();
+list.Add(44);
+var stringList = new List<string>();
+stringList.Add("myString");
+var myClassList = new List<MyClass>();
+myClassList.Add(new MyClass());
+```
+
+##### 特性4：代码的扩展
+
+##### 特性5：命名约定
+
+- 泛型类型的名称用字母T作为前缀
+- 如果没有特殊的要求，泛型类型允许用任意类替代，且只使用了一个泛型类型，就可以用字符T作为泛型类型的名称
+
+```C#
+public class List<T>{};
+public class LinkedList<T>{};
+```
+
+- 如果泛型类型有特定的要求(例如，它必须实现一个接口或派生自基类)，或者使用了两个或多个泛型类型，就应给泛型类型使用描述性的名称
+
+```C#
+public delegate void EventHandler<TEventArgs> (object sender,TEventArgs e);
+public delegate TOutput Converter<TInput,TOutput> (TInput from) ;
+public class SortedList<TKey, TValue> { };
+```
+
+#### 创建泛型类
+
+泛型类的定义与一般类类似，只要使用泛型类型声明。之后泛型类型就可以在类中用作一个字段成员，或者方法的参数类型
+
+> 泛型类定义：Chap5中的LinkedList.cs和LinkedListNode.cs
+
+每个对象的类都可以由泛型实现方式。另外，如果类使用了层次结构，泛型有利于消除类型强制转换操作
+
+#### 泛型类的功能
+
+##### 默认值
+
+不能把null赋予泛型类型，原因是泛型类型也可以实例化为值类型，而null只能用于引用类型。
+
+通过**default**关键字，将null赋予引用类型，将0赋予值类型
+
+`T doc = default(T);`
+
+> Chap5.Document中的DocumentManager.cs中的GetDocument()方法
+
+##### 约束
+
+如果泛型类需要调用泛型类型中的方法，就必须添加约束
+
+例子中**where**子句实现IDoucment接口的要求
+
+> Chap5.Document中的DocumentManager.cs
+
+泛型支持的几种约束类型
+
+| 约束           | 说明                                                         |
+| -------------- | ------------------------------------------------------------ |
+| where T:struct | 对于结构约束，类型T必须是值类型                              |
+| where T:class  | 类约束指定类型T必须是引用类型                                |
+| where T:IFoo   | 指定类型T必须实现接口IFoo                                    |
+| where T:Foo    | 指定类型T必须派生自基类Foo                                   |
+| where T:new()  | 这是一个构造函数约束，指定类型T必须有一个默认构造函数        |
+| where T1:T2    | 这个约束也可以指定，类型T1派生自泛型类型T2.该约束也称为裸类型约束 |
+
+使用泛型类型可以合并多个约束。where T:IFoo,new()约束和MyClass<T>声明指定,where子句中只能定义**基类、接口和默认构造函数**
+
+```c#
+public class MyClass<T>
+	where T:IFoo,new()
+{
+	...
+}
+```
+
+##### 继承
+
+泛型类型可以实现泛型接口，也可以派生自一个类。泛型类可以派生自泛型基类
+
+```C#
+public class Base<T>
+{
+}
+//要求必须重复接口的泛型类型，或者必须指定基类的类型
+public class Derived<T>:Base<T>//public class Derived：Base<string>
+{
+}
+```
+
+派生类可以是泛型类或非泛型类
+
+```C#
+public abstract class Calc<T>
+{
+    public abstract T Add(T x,T y);
+    public abstract T Sub(T x,T y);
+}
+public class IntCalc:Calc<int>
+{
+    public override int Add(int x,int y)
+    {
+        return x+y;
+    }
+    public override int Sub(int x,int y)
+    {
+        return x-y;
+    }
+}
+```
+
+##### 静态成员
+
+泛型类的静态成员只能在类的一个实例中共享
+
+> Chap5.Document中的StaticDemo.cs
+
+#### 泛型接口
+
+泛型接口中定义的方法可以带**泛型参数**
+
+##### 协变和抗变
+
+协变和抗变指对参数和返回值的类型进行转换
+
+1.在NET中，**参数类型是协变的**。假定有Shape和Rectangle类, Rectangle 派生自Shape基类。声明Display()方法是为了接受Shape类型的对象作为其参数:
+
+`public void Display(Shape o){}`
+
+2.现在可以传递派生自Shape基类的任意对象。因为Rectangle 派生自Shape,所以Rectangle满足Shape的所有要求，编译器接受这个方法调用:
+
+```c#
+var r=new Rectangle(Width = 5,Height = 2.5);
+Display(r);
+```
+
+3.**方法的返回类型是抗变的。 **当方法返回一个Shape时，不能把它赋予Rectangle, 因为Shape不一定总是Rectangle。反过来是可行的:
+
+```C#
+//如果一个方法像GetRectangle0方法那样返回一个Rectangle 
+public Rectangle GetRectangle();
+//就可以把结果赋予某个Shape
+Shape s = GetRectangle();
+```
+
+.NET4之后，扩展的语言支持泛型接口和泛型委托的协变
+
+##### 泛型接口的协变
+
+<font color = red>out</font>关键字标注，则泛型接口是协变的，这也意味着返回类型只能是T
+
+> Chap5.Variance中的IIndex.cs,应用在Program.cs
+
+##### 泛型接口的抗变
+
+<font color = red>in</font>关键字标注，则泛型接口是抗变的
+
+#### 泛型结构
+
+泛型结构没有继承特性，<font color=red>Nullable<T></font>
+
+可空类型使用<font color=red>?</font>关键字:`int? x;`
+
+```C#
+//结构Nullable<T>定义了一个约束，起泛型类型T必须是一个结构
+public struct Nuallable<T>
+    where T:struct
+    {
+        public Nuallable(T value)
+        {
+            this.hasValue=true;
+            this,value=value;
+        }
+        //泛型结构定义的除了T类型之外唯一的系统开销
+        //用于确定是设置对应的值还是使之为空
+        private bool hasValue;
+        //泛型结构定义的只读属性
+        public bool HasValue
+        {
+            get{return hasValue;}
+        }
+        private T value;
+        ...
+        //泛型结构定义操作符重载
+        private override string ToString(){...}
+    }
+```
+
+- 非可空类型转换为可空类型(<font color=blue>成功的</font>)
+
+  ```C#
+  int y1=4;
+  int? x1=y1;
+  ```
+
+- 可空类型转换为非可空类型(<font color=blue>失败的</font>)
+
+  ```C#
+  int x1=GetNullableType();
+  int y1=(int)x1;//抛出异常InvalidOperationException
+  ```
+
+- 使用合并运算符从可空类型转换为费可空类型(<font color=blue>成功的</font>)<font color=red>??运算符</font>
+
+  ```c#
+  int? x1 = GetNullableType();
+  int y1 = x1 ?? 0;
+  ```
+
+
+#### 泛型方法
+
+- 泛型方法可以在非泛型类中定义
+
+``` c#
+//定义泛型方法
+void Swap<T>(ref T x,ref T y)
+{
+	T temp;
+	temp=x;
+	x=y;
+	y=temp;
+}
+//调用泛型方法
+int i=4;
+int j=5;
+Swap<int>(ref x,ref y);
+//可以像非泛型方法那样调用
+Swap(ref i,ref j);
+```
+
+- 带约束的泛型方法
+
+  > Chap5.GenericMethods的Algorithm.cs
+
+- 带委托的泛型方法
+
+  >  Chap5.GenericMethods的Algorithm.cs
+
+- 泛型方法规范
+
+  
 
 
 

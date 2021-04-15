@@ -1,0 +1,6 @@
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.Variance\bin\Debug\Chap5.Variance.exe.config
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.Variance\obj\Debug\Chap5.Variance.csprojResolveAssemblyReference.cache
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.Variance\bin\Debug\Chap5.Variance.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.Variance\bin\Debug\Chap5.Variance.pdb
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.Variance\obj\Debug\Chap5.Variance.exe
+C:\Users\李晨曦\Desktop\zhl\GIS开发资料\CSharpLearn\CSharpLearn\TestCode\Chap5.Variance\obj\Debug\Chap5.Variance.pdb
