@@ -6,7 +6,7 @@ C#入门学习，指导书：C#高级编程第9版
 
 ## .NET体系结构
 
-语言互操作性：用一种语言编写的类应能直接与用另一怨言编写的类通信
+语言互操作性：用一种语言编写的类应能直接与用另一语言编写的类通信
 
 垃圾回收机制
 
@@ -1380,29 +1380,288 @@ Swap(ref i,ref j);
 
 - 泛型方法规范
 
-  
+## 数组
 
+#### 同一类型和不同类型的多个对象
 
+- 同一类型：集合和数组
+- 不同类型：元组（Tuple）
 
+#### 简单数组
 
+##### 数组声明和初始化
 
+```c#
+// 类型[] 变量名
+int[] myArray;
+//初始化,引用类型必须使用new关键字，指定数组中元素的类型和数量
+myArray = new int[4];
+//一个语句中声明和初始化数组
+int[] myrray = new int[4];
+//数组初始化器只能在声明时使用
+int[] myArray = new int[4]{4,7,111,2};
+//自动计数声明
+int[] myArray = new int[]{1,1,1};
+//简化形式
+int[] myArray = {1,2,3,4};
+```
 
+##### 访问数组元素
 
+索引器以0开头
 
+```C#
+int[] myArray = new int[]{4,5,6,7};
+int v1=myArray[0];
+```
 
+Length属性获取数组长度
 
+```C#
+for (int i=0;i<myArray.Length;i++)
+{
+ ...
+}
+//foreach 遍历
+foreach(var i in myArray)
+{
+    ...
+}
+```
 
+##### 使用引用类型
 
+既能声明与定义类型的数组，也能声明自定义类型的数组
 
+```C#
+public class Person
+{
+	public string FirstName{get; set;}
+	public string LastName{get;set;}
+	public override string ToString()
+	{
+		return String.Format("{0} {1}",FristName,LastName);
+	}
+}
+//声明自定义类型的数组
+Person[] myPerson=new Person[3];
+//自定义类型数组初始化与预定义类型初始化相同
+```
 
+#### 多维数组
 
+```C#
+//二维数组声明和初始化
+int[,] twodim = new int[3,3];
+two[0,0]=1;
+.......
+//使用数组索引器初始化
+int[,] twodim1 = {{1,2,3},{1,2,3},{1,2,3}};
+//三维数组声明和初始化
+int[,,] threedim = {
+		{{1,2},{1,2}},
+		{{1,2},{1,2}},
+		{{1,2},{1,2}}
+		}
+int v2=threedim[0,1,1];
+```
 
+#### 锯齿数组
 
+各行可能有不同的大小，声明锯齿数组时<font color=red>要依次放置左右括号</font>
 
+- 初始化锯齿数组时只在第一个方括号中设置该数组包含的行数，定义各行中元素个数的第2个方括号设置为空
 
+```C#
+//锯齿数组的声明和初始化
+int[][] jagged = new int[3][];
+jagged[0] = new int[2]{1,2};
+jagged[1] = new int[6]{3,4,5,6,7,8};
+jagged[2] = new int[3]{1,2,3};
+//获取元素
+for(int row=0;row<jagged.Length;row++)
+{
+    for(int element = 0;element<jagged[row].Length;element++)
+    {
+        ...
+    }
+}
+```
 
+#### Array类
 
+Array类实现的属性有Length属性、LongLength属性（如果数组包含的元素个数超过了整数的取值范围则用LongLength属性来获取元素个数）和Rank属性（获取数组的维数）
 
+##### 创建数组
 
+Array类为一个抽象类，不能用构造函数创建数组，除了使用C#语法创建数组实例外，还可以使用<font color=red>静态方法CreateInstance()</font>创建数组，该方法第一个参数为元素的类型，第二个参数定义数组的大小，用SetValue()方法设置对应元素的值，用GetValue()方法读取对应元素的值
 
+```c#
+Array intArray1 = Array.CreateInstance(typeof(int),5);
+for(int i=0;i<5;i++)
+{
+	intArray1.SetValue(33,i);
+}
+for(int i=0;i<5;i++)
+{
+	Console.WriteLine(intArray1.GetValue(i));
+}
+//强制转换成声明为int[]的数组
+int[] intArray2 = (int[])intArray1;
+```
 
+- CreateInstance()方法的重载版本，可以创建<font color = red>多维数组和不基于0的数组</font>
+
+​       尽管数组不基于0，但可以用一般的C#表示法将它赋予一个变量，但是不要超过边界
+
+> \Chap6\Programs.cs
+
+##### 复制数组
+
+数组为引用类型
+
+- Clone()方法实现浅表副本
+- Copy()方法实现浅表副本
+
+如果数组包含引用类型，则不复制元素，只复制引用
+
+两种复制方法的区别：Clone()方法会创建一个新数组，而Copy()方法必须传递阶数相同且有足够元素的已有数据
+
+<font color=red>如果需要包含引用类型的数组的深层副本，就必须迭代数组并创建新对象</font>
+
+##### 排序
+
+- Array类使用QuickSort算法对数组中的元素进行排序，Sort()方法需要数组中的元素实现IComparable接口，一般简单类型都已实现该接口，可以对包含这些类型的元素排序
+
+  ```c#
+  string[] names={"dd","dsfs","gss"};
+  Array.Sort(names);
+  foreach(var name in names)
+  {
+  	...
+  }
+  ```
+
+- 如果对数组使用自定义类，则必须实现IComparable接口。该接口只有一个<font color=red>CompareTo()</font>方法。如果要比较的对象相等则返回0，如果该实例应排在参数对象的前面则该方法返回小于0的值，如果该实例应排在参数对象的后面该方法就返回大于0的值
+
+  > 对\Chap6\Person.cs的Person类进行修改
+  >
+  > 使用：\Chap6\Program.cs
+
+- 与上述不同的排序方式或者不能修改在数组中用作元素的类，则不需实现IComparer接口或者IComparer<T>接口，这两个接口定义了Compare()方法
+
+  > 定义\Chap6\PersonComparer.cs对Person类实现IComparer接口
+  >
+  > 使用：\Chap6\Program.cs
+
+- Array类提供的Sort方法需将一个委托作为参数传给方法以比较两个对象，而无需依赖IComparable或IComparer接口
+
+#### 数组作为参数
+
+数组可以作为参数传递给方法，也可以从方法中返回
+
+```C#
+//方法中返回
+static Person[] GetPerson()
+{
+	return new Person[]{
+		new Person{...},
+		new Person{...},
+		new Person{...}
+	}
+}
+//作为参数在方法中传递
+static void DisplayPersons(Person[] persons)
+{
+	...
+}
+```
+
+- 数组协变（<font color=red>只能用于引用类型，不能用于值类型</font>）
+
+  数组支持协变，表明数组可以声明为基类，其派生类型的元素可以赋予数组元素
+
+  ```c#
+  static void DisplayArray(object[] data)
+  {
+  	//
+  }
+  ```
+
+- ArraySegment<T>
+
+  表示数组的一段，<font color= blue>可用于需要使用不同的方法处理某个大型数组的不同部分</font>
+
+  > Chap6\Program.cs中的SumOfSegments方法
+
+   数组段不复制原数组的元素，但是原数组可以通过ArraySegment<T>访问，如果数组段中的元素改变了，这些变化就会反映到原数组中
+
+#### 枚举
+
+在foreach语言中使用枚举，可以迭代集合中的元素，且无需知道集合中的元素个数。
+
+- IEnumerator接口
+
+foreach语句使用IEnumerator接口的方法和属性，迭代集合中的所有元素。IEnumerator定义了Current属性以返回光标所在的元素，该接口的MoveNext()方法移动到集合的下一个元素上，如果有这个元素则返回true，如果集合中不再有更多的元素，则该方法返回false
+
+- foreach语句
+
+C#编译器会把foreach语句转换为IEnumerator接口的方法和属性
+
+- yield语句
+
+  用于便捷的创建枚举器，yield return语句返回集合的一个元素，并移动到下一个元素上，yield break可停止迭代
+
+  包含yield语句的方法或属性也称为迭代块，迭代块必须返回声明为返回IEnumerator或IEnumerable接口，或者这些接口的泛型版本。这个块可以包含多条yield return语句或yield break语句，<font color =red>但不能包含return语句</font>
+
+  yield语句会生成一个枚举器，而不仅仅生成一个包含的项的列表。这个枚举器通过foreach语句调用，从foreach中一次访问每一项时，就会访问枚举器，这样就可以迭代大量的数据，而无需一次把所有的数据都读入内存
+
+  - 迭代集合的不同方式
+
+    - 类支持的默认迭代是定义为返回IEnumerator()方法，命名的迭代返回IEnumerable
+
+    - 迭代字符串数组的客户端代码先使用GetEnumerator0方法，该方法不必在代码中编写，因为这是foreach语句默认使用的方法。然后逆序迭代标题，最后将索引和要迭代的项数传递给Subset()方法来迭代子集
+
+    > Chap6\MusicTitles.cs
+    >
+    > 使用：Chap6\Program.cs
+
+  - 用yield return 返回枚举器
+
+    > Chap6\GameMove.cs
+    >
+    > 使用：Chap6\Program.cs
+
+#### 元组
+
+数组合并了相同类型的对象，元组合并了不同类型的对象，.NET中定义了8个泛型Tuple类和一个静态Tuple类，不同的泛型Tuple类支持不同数量的元素
+
+> Tuple<T1>包含一个元素，Tuple<T1,T2>包含两个元素，以此类推
+
+> 使用：Chap6\Program.cs
+
+如果元组包含的项超过8项，可以使用带8个参数的Tuple类定义，最后一个模板是TRest，表示必须给它传递一个元组，这样就可以创建带任意多项的元组
+
+#### 结构比较
+
+数组和元组都实现接口IStructuralEquatable和IStructuralComparable，这些接口都是显式实现的，所以在使用是需要把数组和元组强制转换为这个接口，IStructuralEquatable接口用于比较两个元组或者数组是否有相同的内容，IStructuralComparable接口用于给元组或数组排序
+
+> 实现IStructuralEquatable接口：Chap6\Person2.cs
+>
+> Chap6\PersonComparer.cs
+>
+> 使用：Chap6\Program.cs
+
+对于IStructuralEquatable接口定义的Equals()方法，它的第一个参数是object类型，第二个参数是IEqualityComparer类型
+
+> 使用：Chap6\Program.cs
+
+元组对比
+
+Tuple<>类提供了两个Equals()方法：一个重写了Object积累中的Equals()方法，并把object作为参数
+
+> 使用：Chap6\Program.cs
+
+第二个是由IStructuralEqualityComparer接口定义，并把object和IEqualityComparer作为参数
+
+>  类定义：Chap6\TupleComparer.cs

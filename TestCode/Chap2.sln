@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chap2", "Chap2\Chap2.csproj", "{86C2DD47-5DCA-4CF4-8367-9DA164838260}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chap5.Variance", "Chap5.Variance\Chap5.Variance.csproj", "{59CBEAA0-3E45-485B-AEB0-FF1DF374F282}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chap5.GenericMethods", "Chap5.GenericMethods\Chap5.GenericMethods.csproj", "{B1E93F26-C806-4AEC-A274-A6B765E2EBB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chap6", "Chap6\Chap6.csproj", "{8037157A-E1F6-41EC-8349-76F63BADB089}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{B1E93F26-C806-4AEC-A274-A6B765E2EBB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1E93F26-C806-4AEC-A274-A6B765E2EBB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1E93F26-C806-4AEC-A274-A6B765E2EBB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8037157A-E1F6-41EC-8349-76F63BADB089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8037157A-E1F6-41EC-8349-76F63BADB089}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8037157A-E1F6-41EC-8349-76F63BADB089}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8037157A-E1F6-41EC-8349-76F63BADB089}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
