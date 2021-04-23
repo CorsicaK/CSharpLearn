@@ -1665,3 +1665,306 @@ Tuple<>类提供了两个Equals()方法：一个重写了Object积累中的Equal
 第二个是由IStructuralEqualityComparer接口定义，并把object和IEqualityComparer作为参数
 
 >  类定义：Chap6\TupleComparer.cs
+
+## 运算符和类型强制转换
+
+#### 运算符
+
+![image-20210422143509129](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210422143509129.png)
+
+大多数与其他语言一样，不再赘述
+
+- 运算符的简化操作
+
+  ++，--+=，-=  等等，不再赘述
+
+  ++和--的前置与后置与其他语言相通
+
+  前置：先加减后运算；后置：先运算后加减
+
+- 条件运算符（三元表达式）
+
+  <font color=red>？：</font>    	`condition ? true_value : false_value`
+
+  `x == 1 ? "man" : "men"`
+
+- <font color=blue>checked和unchecked运算符</font>
+
+  溢出异常控制运算符
+
+  ```C#
+  byte b=255;
+  checked
+  {
+  	b++;
+  }
+  Console.WriteLine(b.ToString());//输出错误信息
+  unchecked//禁止溢出检查
+  {
+  	b++;
+  }
+  Console.WriteLine(b.ToString());//不会抛出异常，但会丢失数据，b=0
+  ```
+
+- is运算符
+
+  可以检查对象是否与特定的类型兼容
+
+  兼容表示对象或者是该类型，或者是派生自该类型
+
+  ```C#
+  int i=10;
+  if(i is object)   //true
+  {
+  	...
+  }
+  ```
+
+- as运算符
+
+  用于执行<font color=red>引用类型</font>显式类型转换。如果要转换的类型与指定的类型兼容，转换就会成功进行，如果类型不兼容，as运算符就会返回null值
+
+  ```C#
+  object o1="ssss";
+  object o2=5;
+  string s1=o1 as string; //s1="ssss";
+  string s2=o2 as string; //s2=null;
+  ```
+
+- sizeof运算符
+
+  该运算符可以确定栈中值类型需要的长度（单位是字节）
+
+  ```C#
+  Console.WriteLine(sizeof(int));  //4
+  unsafe    //对复杂类型和非基本类型使用sizeof运算符需要将代码放到unsafe块中
+  {
+  	Console.WriteLine(sizeof(Customer));
+  }
+  ```
+
+- typeof运算符
+
+  返回一个表示特定类型的System.Type对象，例如typeof(string)返回表示System.String类型的Type对象。
+
+- 可空类型和运算符<font color = red>?</font>
+
+  ```c#
+  int? a=null;
+  int? b=a+4;//b=null
+  int? c=a*5;//c=null
+  ```
+
+  null值的可能性表示，不能随意合并表达式中的可空类型和非可空类型。
+
+- 空合并运算符<font color=red>??</font>
+
+  这个运算符放在两个操作数之间，第一个操作数必须是一个可空类型或引用类型；<font color=purple>第二个操作数必须与第一个操作数的类型相同，或者可以隐含的转换为第一个操作数的类型</font>
+
+  - 如果第一个操作数是null，整个表达式等于第二个操作数的值
+
+  - 如果第一个操作数不是null，整个表达式等于第一个操作数的值
+
+    ```C#
+    int? a=null;
+    int b;
+    b=a??10;//b=10;
+    a=3;
+    b=a>>10;//b=3;
+    ```
+
+##### 运算符的优先级
+
+![image-20210422153915704](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210422153915704.png)
+
+#### 类型的安全性
+
+##### 类型转换
+
+- 隐式转换
+
+  ![image-20210422154647190](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210422154647190.png)
+
+  隐式转换值类型时，可空类型需要考虑其他因素
+
+  - 可空类型隐式地转换为其他可空类型，应遵循表7-5非可空类型转换规则
+  - 非可空类型隐式地转换为可空类型也应遵循表7-5转换规则
+  - 可空类型不能隐式转换为其他非可空类型，此时必须进行显式转换
+
+- 显式转换
+
+  显式类型转换有一些限制：就值类型来说，只能在数字、char类型和enum类型之间转换，不能直接把布尔型强制转换为其他类型，也不能把其他类型转换为布尔型
+
+  数字与字符串之间的转换
+
+  ```C#
+  int i=10;
+  string s=i.ToString();
+  string c="100";
+  int j=int.Parse(c);
+  ```
+
+##### 装箱和拆箱
+
+- 装箱：将值类型转换为引用类型
+
+- 拆箱：将以前的装箱的引用类型转换为值类型
+
+  ```C#
+  int myIntNumber =20;
+  object myObject = myIntNumber;    //装箱
+  int mySecondNumber=(int)myObject; //拆箱
+  ```
+
+  只能对以前装箱的变量进行拆箱，且必须确保<font color=red>得到的值变量有足够的空间存储结构拆箱的值中的所有字节</font>(如long类型装箱之后拆箱为int类型)
+
+#### 比较对象的相等性
+
+##### 比较引用类型的相等性
+
+- ReferenceEquals()方法
+
+  属于静态方法，不能被重写，测试两个引用是否为类的同一个实例，特别是两个引用是否包含内存中的相同地址，如果提供的两个引用引用同一个对象实例，则ReferenceEquals()返回true，同时它认为null等于null
+  
+  ```C#
+  SomeClass x,y;
+  x=new SomeClass();
+  y=new SomeClass();
+  bool B1=ReferenceEquals(null,null);   //true
+  bool B2=ReferenceEquals(null,x);      //false
+  bool B3=ReferenceEquals(x,y);         //false
+  ```
+
+- 虚拟的Equals()方法
+
+  这个方法是<font color=red>虚拟的</font>,可以在自己的类中重写它，从而按<font color =red>值</font>来比较对象
+
+  注：重写的代码不会抛出异常
+
+- 静态的Equals()方法
+
+  与虚拟实例版本作用相同，其区别是静态版本带有两个参数，并对它们进行相等性比较
+
+  该方法可以处理两个对象中<font color=red>有一个是null</font>的情况，有一个null则抛出异常
+
+  两个null则true，一个null为false，如果两个引用实际上引用了某个独享，就调用Equals()的虚拟实例版本。
+
+  <font color=blue>重写Equals()的实例版本就相当于重写了静态版本</font>
+
+- 比较运算符(==)
+
+  ```C#
+  //在大多数情况下，以下情况表示正在比较引用
+  bool b=(x==y);
+  ```
+
+##### 比较值类型的相等性
+
+采用与引用类型相同的规则：<font color=red>ReferenceEquals()用于比较引用，Equals()用于比较值，比较运算符看做中间项</font>
+
+最大的区别：<font color=blue>值类型需要装箱，才能转换为引用</font>
+
+如果值类型包含作为字段的引用类型，就需要重写 Equals()
+
+#### 运算符重载
+
+运算符重载不仅局限于算术运算符，还要考虑<font color=red>比较运算符</font>(==、>=、<=、!=、<、>)
+
+##### 运算符重载示例
+
+<font color=blue>operator</font>关键字声明
+
+C#要求所有的运算符重载都声明为<font color=blue>public 和 static</font>的，这表示它们与它们的类或结构相关联，而不与某个特定的实例相关联，所以运算符重载的代码体<font color=red>不能访问非静态成员，也不能访问this标识符</font>
+
+- 重载更多的算术运算符
+
+  > 定义： Chap7/Vector.cs
+  >
+  > 使用： Chap7/Program.cs
+
+- 重载比较运算符
+
+  - C#<font color=red>要求成对的重载运算符</font> 如重载了“==”就必须重载"!="
+
+    注:重载了"===="和"!="时还必须重载从System.Object中继承的Equals()和GetHashCode()方法，因为Equals()应与=="=="有相同的逻辑
+
+  - 比较运算符必须返回bool类型的值
+
+- 可以重载的运算符
+
+![image-20210423105730245](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210423105730245.png)
+
+#### 用户定义的类型强制转换
+
+C#允许用户定义自己的数据类型（结构和类），所以需要某些工具支持自定义的数据类型之间进行类型强制转换，可以把类型强制转换运算符定义为相关类的一个成员运算符，<font color =red>类型强制转换运算符必须标记为隐式或显式</font>.隐式适用于类型强制转换是安全的，显式适用于可能会出现数据丢失或者抛出异常的强制转换
+
+类型强制转换<font color=blue>必须同时声明为public和static</font>
+
+##### 实现用户定义的类型强制转换
+
+> 定义： Chap7/Currency.cs
+>
+> 使用： Chap7/Program.cs
+
+  有时候因为成员类型的问题，问题不出在调用而在方法中，可以将方法体写在<font color=red>checked</font>环境下以确保类型
+
+- 类之间的类型强制转换
+
+  定义不同结构或者类的实例之间的类型强制转换的限制：
+
+  - 如果某个类派生自另一个类，就不能定义这两个类之间的类型强制转换（这些类型的强制转换已经存在
+  - 类型强制转换必须在源数据类型或目标数据类型的内部定义，一旦在一个类的内部定义了类型强制转换，就不能在另一个类中定义相同的类型强制转换
+
+- 基类和派生类之间的类型强制转换
+
+  ```C#
+  //MyDerived直接或间接派生自MyBase
+  //以下为MyDerived隐式的转换为MyBase
+  MyDerived derivedObject = newMyDerived();
+  MyBase baseCopy = derivedObject;
+  //另一种方式
+  MyBase derivedObject = new MyDerived();
+  MyBase baseObject = new MyBase();
+  MyDerived deriveCopy1 = (MyDerived) derivedObject; //OK
+  MyDerived deriveCopy2 = (MyDerived) baseObject;    //Throws exception
+  
+  //如果实际上要把MyBase实例转换为真实的MyDerived对象，该对象的值根据MyBase实例的内容来确定，就不能使用类型强制转换语法
+  //最合适的选项通常是定义一个派生类的构造函数，以基类的实例作为参数完成初始化
+  class DerivedClass:BaseClass
+  {
+      public DerivedClass(BaseClaass rhs)
+      {
+          //initialize
+      }
+      //...
+  }
+  ```
+
+- 装箱和拆箱数据类型强制转换
+
+  基本结构和派生结构之间的强制转换总是基元类型或结构与System.Object之间的转换
+
+  从结构（或基本类型）到Object的强制转换总是一种隐式的强制转换，因为这种强制转换是从派生类型到基类型的转换
+
+  ```C#
+  Currency balance = new Currency(40.0);
+  object baseCopy = balance;
+  ```
+
+- 多重类型强制转换
+
+  如果没有直接的强制转换方式，C#编译器会自动将几种强制转换方式合并起来
+
+  ```c#
+  //隐式的转换，自动合并了几种转换方式
+  Currency balance = new Currency(10,50);
+  long amount = (long)balance;
+  double amoountD = balance;
+  //显式的转换
+  Currency balance = new Currency(10,50);
+  long amount = (long)(float)balance;
+  double amountD = (double)(float)balance;
+  ```
+
+  
+
