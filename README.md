@@ -4,7 +4,7 @@
 
 C#入门学习，指导书：C#高级编程第9版
 
-## .NET体系结构
+## 1  .NET体系结构
 
 语言互操作性：用一种语言编写的类应能直接与用另一语言编写的类通信
 
@@ -12,11 +12,11 @@ C#入门学习，指导书：C#高级编程第9版
 
 对于共享程序集的异步编程，C#5.0新增的异步方法：async和await（应该与JS相同，后续验证）
 
-![image-20210315145057508](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210315145057508.png)
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\1-1.png)
 
 
 
-## 核心C#
+## 2  核心C#
 
 #### 基础介绍
 
@@ -296,7 +296,7 @@ csc DoubleMain.cs /main:Wrox.MathExample
 
 预定义主要格式字符串表
 
-![image-20210316101302850](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210316101302850.png)
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\2-1.png)
 
 可以使用占位符代替格式字符串
 
@@ -420,7 +420,7 @@ Console.WriteLine("{0:#.00}",d);
 
     在某些情况下可把**常量或只读字段**设置为共有
 
-## 对象和类型
+## 3  对象和类型
 
 #### 类和结构
 
@@ -845,7 +845,7 @@ public static class MoneyExtension
 money.AddToAmount();
 ```
 
-## 继承
+## 4  继承
 
 #### 继承的类型
 
@@ -1103,7 +1103,7 @@ public interface ITransferBankAccount:IBankAccount
 }
 ```
 
-## 泛型
+## 5  泛型
 
 #### 泛型概述
 
@@ -1380,7 +1380,7 @@ Swap(ref i,ref j);
 
 - 泛型方法规范
 
-## 数组
+## 6  数组
 
 #### 同一类型和不同类型的多个对象
 
@@ -1666,11 +1666,11 @@ Tuple<>类提供了两个Equals()方法：一个重写了Object积累中的Equal
 
 >  类定义：Chap6\TupleComparer.cs
 
-## 运算符和类型强制转换
+## 7  运算符和类型强制转换
 
 #### 运算符
 
-![image-20210422143509129](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210422143509129.png)
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\7-1.png)
 
 大多数与其他语言一样，不再赘述
 
@@ -1775,7 +1775,7 @@ Tuple<>类提供了两个Equals()方法：一个重写了Object积累中的Equal
 
 ##### 运算符的优先级
 
-![image-20210422153915704](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210422153915704.png)
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\7-2.png)
 
 #### 类型的安全性
 
@@ -1783,7 +1783,7 @@ Tuple<>类提供了两个Equals()方法：一个重写了Object积累中的Equal
 
 - 隐式转换
 
-  ![image-20210422154647190](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210422154647190.png)
+  ![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\7-3.png)
 
   隐式转换值类型时，可空类型需要考虑其他因素
 
@@ -1892,7 +1892,7 @@ C#要求所有的运算符重载都声明为<font color=blue>public 和 static</
 
 - 可以重载的运算符
 
-![image-20210423105730245](C:\Users\李晨曦\AppData\Roaming\Typora\typora-user-images\image-20210423105730245.png)
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\7-4.png)
 
 #### 用户定义的类型强制转换
 
@@ -1965,6 +1965,195 @@ C#允许用户定义自己的数据类型（结构和类），所以需要某些
   long amount = (long)(float)balance;
   double amountD = (double)(float)balance;
   ```
+
+## 8  委托、lambda表达式和事件
+
+#### 引用方法
+
+lambda表达式与委托直接相关，当参数是委托类型时，就可以使用lambda表达式实现委托引用
+
+#### 委托
+
+把方法传递给其他方法时需要委托
+
+如果要传递方法，就必须把方法的细节封装在一种新类型的对象中，即委托。委托只是一种特殊类型的对象，其特殊之处在于，我们以前定义的所有对象都包含数据，而<font color=red>委托包含的只是一个或多个方法的地址</font>。
+
+##### 声明委托
+
+语法类似于方法的定义但是<font color=red>没有方法体</font>，可以在定义类的任何相同地方定义委托，可以在委托的定义上应用任意常见的访问修饰符
+
+```C#
+//可以定义不同的返回类型
+delegate void IntMethodInvoker(int x);
+//是否带参数
+degelate double TwoLongsOp(long first,long second);
+degelate string GetAString();
+//访问修饰符：public、private、protected等
+public degelate string GetTwoString();
+```
+
+##### 使用委托
+
+```c#
+private delegate string GetAString();
+static void Main()
+{
+   int x=40;
+    //实例化类型为GetAString的委托并初始化
+    //ToString方法不能带括号，只需把方法名传递即可
+   GetAString firstStringMethod=new GetAString(x.ToString); 
+    //GetAString firstStringMethod = x.ToString;   与上句作用相同
+   Console.WriteLine("String is {0}",firstStringMethod());
+}
+```
+
+委托推断：为了减少输入量，只要需要委托实例，就可以只传送<font color=red>地址的名称</font>。委托推断可以在需要委托实例的任何地方使用，也可用于事件
+
+> 通过委托调用方法的简单例子说明：Chap8/Program.cs
+>
+> 该例子把委托作为参数
+
+简单的委托示例
+
+> Chap8/Program.cs
+
+复杂的委托示例   ——Action<T> 和Func<T>委托
+
+##### Action<T>和Func<T>委托
+
+Action<T>委托表示<font color =red>引用一个void返回类型的方法</font>，至多传递16种不同参数类型
+
+` Action<in T1,in T2,in T3,....>调用带多个参数的方法`
+
+Func<T>委托允许调用<font color=red>带返回类型的方法</font>，至多传递16个参数类型和一个返回类型
+
+` Func<in T1,in T2,in T3,out TResult> 调用带四个参数和一个返回类型的方法`
+
+> 示例：Chap8/BubbleSorter.cs、Employee.cs、Program.cs
+
+##### 多播委托
+
+多播委托：包含多个方法的委托，调用多播委托可按照顺序连续调用多个方法，因此该委托签名必须返回<font color=red>void</font>，否则只能得到委托调用的最后一个方法的结果     
+
+- 多播委托可以识别<font color=red>“+”和“+=”</font>运算符、<font color=red>“-”和“-=”</font>运算符
+
+```c#
+Action<double> operations = MathOperations.MultiplyByTwo;
+operations += MathOperations.Square;
+Action<double> operations2 = MathOperations.Square;
+Action<double> operationsr = operations+operations2;
+```
+
+> 示例：Chap8/MathOperations.cs、Program.cs
+
+- 多播委托对同一个委托调用方法链没有正式定义顺序，因此应避免编写依赖于以特定顺序调用方法的代码
+- 如果多播委托中一个方法调用异常就会使整个迭代停止
+
+> 以上两点解决方法：Delegate类定义GetInvocationList()方法，返回一个Degelate对象数组，使用遍历，异常抛出后继续迭代
+>
+> Chap8/Program.cs
+
+##### 匿名方法
+
+- 在匿名方法中不能使用跳转语句（break，goto或continue）跳到匿名方法的外部，匿名方法外部的跳转语句也不能跳到该匿名方法内部
+
+- 匿名方法内部不能访问不安全的代码，也不能在匿名方法外部使用ref和out参数，但可以使用在匿名方法外部定义的其他变量
+
+- <font color =red>可以使用lambda表达式代替匿名方法</font>
+
+  ```c#
+  string mid=",middle part,";
+  Func<string,string> anonDel=delegate(string param)
+  {
+  	param+=mid;
+  	param+=" and this was added to the string.";
+  	return param;
+  }
+  Console.WritLine(annoDel("Start of string"));
+  //结果：Start of string,middle part, and this was added to the string.
+  ```
+
+  
+
+#### lambda表达式
+
+只要有委托参数类型的地方就可以使用lambda表达式
+
+lambda运算符<font color=red>=></font>左边列出需要的参数，右边定义赋予lambda变量的方法实现代码
+
+##### 参数
+
+- 一个参数
+
+  ```C#
+  Func<string,string> oneParam = s => String.Format("一个参数：{0}"s);
+  Console.WriteLine(oneParam("test"));
+  ```
+
+- 多个参数
+
+  ```c#
+  //省略参数类型
+  Func<double,double,double> twoParams = (x,y) => x*y;
+  //不省略参数类型
+  Func<double,double,double> twoParams = (double x,double y) => x*y;
+  Console.WriteLine(twoParams(3,5));
+  ```
+
+##### 多行代码
+
+如果lambda表达式的实现代码需要多条语句，<font color=blue>必须添加花括号和return语句</font>
+
+##### 闭包
+
+通过lambda表达式可以访问lambda表达式块外部的变量，称为闭包。<font color =red>使用不当会非常危险</font>
+
+##### 使用foreach语句的闭包
+
+C#5.0中不再需要将代码修改成局部变量
+
+#### 事件
+
+<font color =red>事件基于委托</font>
+
+##### 事件发布程序
+
+- EventHandler<TEventArgs>定义了一个处理程序，它返回void，接受两个参数。对于EventHandler<TEventArgs>，第一个参数必须是<font color=blue>object类型</font>，第二个参数是<font color=blue>T类型</font>。其中EventHandler<TEventArgs>定义了关于T的约束：它必须派生自基类EventArgs。
+
+  > 示例Chap8/CarDealer.cs
+
+- 使用<font color =red>add和remove</font>关键字添加和删除委托的处理程序
+
+```C#
+private delegate EventHandler<CarInfoEventArgs> new CarInfo;
+public event EventHandler<CarInfoEventArgs> newCarInfo
+{
+	add
+	{
+		newCarInfo += value;
+	}
+	remove
+	{
+		newCarInfo -= value;
+	}
+}
+```
+
+##### 事件侦听器
+
+> 示例Chap8/Consumer.cs
+
+> 完整事件的绑定与退订:Chap8/CarDealer.cs、Consumer.cs、Program.cs
+
+##### 弱事件
+
+- 弱事件管理器
+
+  使用弱事件需要创建一个派生自WeakEventManager类的类
+
+  静态属性<font color=red>CurrentManager</font>用于访问类中的单态对象
+
+  弱事件管理器类需要静态方法AddListener()和RemoveListener()，侦听器使用这些方法连接发布程序、断开与发布程序的连接。
 
   
 
