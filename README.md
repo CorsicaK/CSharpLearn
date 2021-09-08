@@ -2157,3 +2157,417 @@ public event EventHandler<CarInfoEventArgs> newCarInfo
 
   
 
+## 字符串与正则表达式
+
+#### System.String类
+
+```c#
+//字符串索引器的使用
+string message="Hello";
+char char4=message[4];
+```
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\9-1-1.png)
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\9-1-2.png)
+
+- 如使用字符串频繁的进行文字处理，应用程序会遇到严重的性能问题，<font color = red>System.Text.StringBuilder类</font>仅限于替换和追加或删除字符串中的文本，但是个工作方式非常高效。
+
+  - StringBuilder类的两个重要属性：Length指定字符串的实际长度，Capacity指定字符串在分配的内存中的最大长度
+
+    ```C#
+    //初始化，150为自定义的初始容量，也可以不设置
+    StringBuilder grettingbuilder = new StringBuilder("Hello from all the guys at ...",150);
+    //追加字符
+    greetingBuilder.AppendFormat("We do hace ....");
+    ```
+
+  - 多次替换文本才能获得试用Stringbuilder类所带来的的高效性能
+
+  - 只读属性MaxCapacity表示给定的StringBuilder实例的容量限制
+
+  - 可以显示的设置容量，如果这个值小于字符串当前长度或者超出了最大容量的某个值就会抛出异常
+
+    ```C#
+    StringBuilder sb=new StringBuilder("xxx");
+    sb.Capacity=100;
+    ```
+
+  - StringBuilder类主要方法
+
+    ![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\9-2.png)
+
+    - <font color=blue>不能把StringBuilder强制转换为String(显式转换和隐式转换都不行)。</font>如果要把StringBuilder的内容输出为String，唯一的方法是使用ToString()方法
+
+- 格式化字符串IFormattable接口
+
+  格式字符串的变量中的含义:ej:`{0,10:E}`
+
+  - 该项的字符串表示要占用的字符数，这个信息前应有<font color=green>逗号</font>，负值表示该项左对齐，正值表示该项右对齐
+
+  - 格式说明符前面应有<font color=green>冒号</font>
+
+  - 常见数字的格式说明符
+
+    ![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\9-3.png)
+
+> 格式化向量示例：Chap9/Vector.cs、Program.cs
+
+#### 正则表达式
+
+<font color=red>System.Text.RegularExpressions命名空间</font>
+
+- RegexOptions枚举的一些选项
+
+  ![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\9-4.png)
+
+  ```C#
+  //使用示例
+  const string pattern=@"\bn";
+  MatchCollection mymatches = Regex.Matches(myText,pattern,RegexOptions.IgnoreCase| RegexOptions.ExplicitCapture);
+  ```
+
+- C#中反斜杠（<font color=red>\\</font>)表示转义字符，因此在使用正则表达式中含有如（\b:表示边界)此类表达式时，前面应该加上<font color=red>@</font>
+
+​      常见正则表达式字符的含义
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\9-5.png)
+
+- 可以把替换的字符放在<font color=red>方括号</font>中，请求匹配包含这些字符,ej:[1|C]表示字符可以是1或者C,[A-Z]表示可以是任何大写字母
+
+> 示例：Chap9/Programs.cs
+
+- 匹配、组合和捕获
+
+  ```c#
+  //示例：匹配URI格式
+  \b(\S+)://([^:]+)(?::(\S+))?\b
+  ```
+
+
+
+## 集合
+
+#### 集合接口和类型
+
+- 集合所在命名空间
+
+  大多数集合类在System.Collections和System.Collections.Generic中
+
+  泛型集合类位于System.Collections.Generic中
+
+  专用于特定类型的集合类位于System.Collections.Specialized中
+
+  线程安全的集合类位于System.Collections.Concurrent中
+
+  
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-1-1.png)
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-1-2.png)
+
+#### 列表
+
+##### 创建列表
+
+定义列表的容量 `List<int> intList = new List<int>(10);`
+
+通过Capacity属性获取和设置集合容量 `intList.Capacity=20;`
+
+如果已将元素添加到列表中且<font color=red>不希望添加更多的元素</font>`intList.TrimExcess();`
+
+##### 添加元素
+
+intList.Add(115);
+
+intList.AddRange(new int[]{15,52,26});
+
+##### 插入元素
+
+intList.Insert(3,15);  //指定位置插入元素
+
+InsertRange()方法可插入大量元素，但是当索引集大于集合中的元素个数会抛出异常
+
+##### 访问元素
+
+```C#
+int x=intList[index];
+//遍历访问
+for(int i=0;i<intList.Count;i++)
+{
+	...
+}
+
+foreach(int i in intList)
+{
+	...
+}
+```
+
+遍历还可以使用FoeEach()方法，该方法用Action<T>参数声明
+
+public void ForEach(Action<T> action);
+
+```C#
+//将Console.WriteLine()方法的地址传入
+intList.ForEach(Console.WriteLine);
+//lambda表达式传入
+racers.ForEach(r=>Console.WriteLine("{0:A}",r));
+```
+
+##### 删除元素
+
+删除索引处的元素：`intList.RemoveAt(index);`    
+
+从集合中删除许多元素：`intList.RemoveRange(index,count);`表示从第index元素开始删除count个元素
+
+##### 搜索
+
+- IndexOf()：找到元素则返回索引，找不到元素就返回-1
+
+- FindIndex()：搜索有某个特性的元素的索引
+
+  public int FindIndex(Predicate<T> match);
+
+  其中Predicate<T>类型为一个为突破，该委托返回一个布尔值，并且需要把类型T作为参数
+
+  > Chap10/FindCountry.cs、Program.cs
+
+  - FindLastIndex()：从集合最后一个元素开始向前搜索某个索引
+
+- Find()：搜索某个特定的元素，也需要一个和FindIndex显示的Predicate<T>类型的参数
+
+  `Racer racer=racers.Find(r=>r.FirstName=="Niki");`
+
+  - FindAll()：返回所有匹配项，也是一个List列表
+
+    `List<Racer> bigWinners=racers.FindAll(r=>r.Wins>20);`
+
+  >  <font color=purple>指定一个协定，前置条件时racer并不为null，如果为null就引发异常</font> `Contract.Requires<ArgumentNullException>(racer != null);`  
+
+##### 排序
+
+- Sort()方法：
+  - 不带参数的排序
+
+  ```C#
+  //排序后输出
+  racers.Sort();
+  racers.ForEach(Console.WriteLine);
+  ```
+  - 带参数的排序
+
+  >  Chap10/RacerComparer.cs、Program.cs
+  - 重载Sort() 
+
+  该方法需要一个Comparison<T>委托：
+
+  public void List<T>.Sort(Comparison<T>);该方法有两个T类型的参数，返回类型为int，两个值相等返回0，第一个值大于第二个值返回大于0的值，否则返回小于0的值
+
+  ```C#
+  //lambda方法实现
+  racers.Sort((r1,r2)=>r2.Wins.CompareTo(r1.Wins));
+  ```
+
+- Reverse()方法：逆转整个集合的顺序
+
+##### 类型转换
+
+- ConvertAll<TOutput>()方法：把所有类型的集合转换为另一种类型
+
+  >  Chap10/Person.cs、Program.cs
+
+##### 只读集合
+
+AsReadOnly()方法
+
+
+
+#### 队列：先进先出
+
+命名空间：System.Collections.Generic
+
+Queue<T>实现ICollection和IEnumerable<T>接口，但是<font color=red>不实现ICollection<T>和IList<T>接口</font>，不能使用Add()和Remove()方法，也不能用索引器访问队列
+
+> Queue<T>类成员
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-2.png)
+
+>  Chap10/Document.cs、DocumentManager.cs、Program.cs
+
+#### 栈：后进先出
+
+Stack<T>实现ICollection和IEnumerable<T>接口
+
+> Stack<T>类成员
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-3.png)
+
+>  Chap10/Program.cs
+
+#### 链表
+
+LinkedList<T> :双向链表
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-4.png)
+
+链表不能在列表中仅存储元素，在存储元素时<font color =red>必须存储每个元素的下一个和上一个元素的信息</font>
+
+LinkedList<T>包含LinkedListNode<T>类
+
+> Chap10.LinkedListSample
+
+#### 有序列表
+
+SortedList<TKey,TValue>：该类按照键给元素排序
+
+```C#
+var books=new SortedList<string,string>();
+//Add()方法添加元素:第一个参数是键，第二个参数是值
+books.Add("Peocess WPF","956-222-21");
+//通过索引器把键作为索引参数添加或修改值
+books["zhangssanTast"]="2446-852-23";
+//foreach遍历
+foreach(KeyValuePair<string,string> book in books)
+{
+    Consolr.WriteLine("{0},{1}",book.Key,book.Value);
+}
+//通过Values访问值
+foreach(string isbn in books.Values)
+{
+    Console.WriteLine(isbn);
+}
+//通过Keys返回键
+foreach(string title in books.Keys)
+{
+    Console.WriteLine(title);
+}
+```
+
+ContainsKey()方法避免尝试使用索引器访问一个所传递的键不存在的元素抛出的异常
+
+TryGetValue()方法尝试获得指定的键，不会抛出异常
+
+
+
+#### 字典（映射/散列表）
+
+最主要的<font color =red>Dictionary<TKey,TValue></font>，容量一般是<font color=purple>素数</font>
+
+##### 键的类型
+
+键的类型需要实现IEquatable接口并重载了GetHashCode()方法和Equals()方法
+
+- System.String用做键非常方便
+
+- <font color=red>数字类型（如Int32）</font>不适合
+
+> Chap10.DictionarySample
+
+##### Lookup<TKey,TElement>类
+
+Lookup类<font color=red>必须调用ToLookup()方法创建</font>，该方法可用于实现IEnumerable<T>接口
+
+```C#
+ var lookupsRacers = racers.ToLookup(t => t.Country);        
+```
+
+##### 有序字典SortedDictionary<TKey,TValue>类
+
+与SortedList<TKey,TValue>类功能相似
+
+#### 集
+
+<font color=red> 包含不重复元素的集合</font>，都实现ISet<T>接口，该接口提供创建合集、交集、给出一个集的超集或子集的方法
+
+- HashSet<T>：包含不重复元素的无序列表
+
+- SortedSet<T>：包含不重复元素的有序列表
+
+  ```C#
+  var companyTeams=new HashSet<string>(){"Feee","Hsaj","Ijss"};
+  ```
+
+Add()方法：显式添加元素，返回布尔值，表示是否添加了元素
+
+IsSubsetOf()方法：判断是否是另一个集的子集，即该集中的每个元素都包含在另一个集中
+
+IsSupersetOf()方法：判断是否是另一个集的超集，即该集是否有另一个集没有的额外元素
+
+UnionWith()方法：该方法融合所有成员后<font color=red>只保留唯一值</font>
+
+```C#
+var allTeams=new SortedSet<string>(companyTeams);
+var privateTeams=new HashSet<string>(){"Resf","Hsaaa","Hsaj"};
+allTeams.UnionWith(privateTeams);
+```
+
+#### 可观察的集合
+
+ObservableCollection<T>类：用于需要集合中的元素何时删除或添加的信息
+
+所在命名空间：System.Collections.ObjectModel
+
+> Chap10/Program.cs
+
+#### 位数组
+
+##### BitArray类
+
+位于命名空间System.Collections中
+
+引用类型，包含一个int数组，每32位使用一个新整数
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-5.png)
+
+基于栈，位于命名空间System.Collections.Specialized中
+
+```C#
+//索引是0-7
+var bits1=new BitArray(8);
+//全部设为true
+bits1.SetAll(true);
+//修改值
+bits1.Set(1,false);
+bits1[5]=false;
+//取反
+bits1.Not();
+
+var bits2=new BitArray(bits1);
+bits[2]=false;
+bits1.Or(bits2);
+```
+
+##### BitVector32结构
+
+如果事先知道需要的位数，可以使用BitVector32结构代替BitArray类
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-6.png)
+
+#### 不变的集合
+
+命名空间：System.Collections.Immutable
+
+ImmutableArray<T>类
+
+```C#
+//创建一个空数组
+ImmutableArray<string> a1=ImmutableArray.Create<string>();
+//Add方法不会改变不变集合本身，而是返回一个新的不变集合
+ImmutableArray<string> a2=a1.Add("Williams");
+```
+
+将可变集合转换成不可变集合：list.ToImmutableList()
+
+#### 并发集合
+
+命名空间：System.Collections.Concurrent
+
+IProducerConsumerCollection<T>接口：可对集合进行<font color=red>线程安全</font>的访问
+
+- ConcurrentQueue<T>
+- ConcurrentStack<T>
+- ConcurrentBag<T>
+- ConcurrentDictionary<TKey,TValue>
+- BlockingCollection<T>
+
