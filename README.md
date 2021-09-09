@@ -2571,3 +2571,93 @@ IProducerConsumerCollection<T>接口：可对集合进行<font color=red>线程�
 - ConcurrentDictionary<TKey,TValue>
 - BlockingCollection<T>
 
+> 管道完整案例：Chap10.PipelineSample
+
+#### 性能
+
+- O(1)：无论集合中有多少数据项，该操作需要的时间都不变
+
+- O(n)：对于集合执行一个操作需要的时间在最坏情况时是n
+
+- O(log n)：表示操作需要的时间随集合中元素的增加而增加，但每个元素需要增加的时间不是线性的而是呈对数曲线
+
+  > 下表为集合类及其执行不同操作的性能（n/a）表示该集合类型不适用该操作
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\10-7.png)
+
+## LINQ(语言继承查询)
+
+> 拓展：多值属性
+>
+> ```c#
+>     public  string FirstName { get; set; }
+>     //多值属性
+>     public IEnumerable <string> Cars { get; private set; }
+>     public IEnumerable <int> Years { get; private set; }
+>     public Racer(string firstName,IEnumerable <int> years, 		params string[] cars)
+>     {
+>         this.FirstName = firstName;
+>         this.Years = new List<int>(years);
+>         this.Cars = new List<string>(cars);
+>     }
+> 
+> ```
+>
+
+- 查询表达式必须以<font color=red> from </font> 开头，以<font color=red> select或group子句</font>结尾
+
+简单的LINQ查询示例
+
+```C#
+//Formulal.GetChampions():自定义的方法，返回IList<Racer >
+var query = from r in Formulal.GetChampions()
+                        where r.Country == "Italy"
+                        orderby r.Wins descending
+                        select r;
+```
+
+- 定义LINQ扩展方法
+
+  扩展方法定义为静态方法，其<font color=red>第一个参数</font>定义了它扩展的类型，扩展方法在一个静态类中声明，<font color=purple>需要对第一个参数使用this关键字</font>
+
+```C#
+//对String类型扩展方法Foo()
+public static class StringExtension
+{
+	public static void Foo(this string s)
+	{
+		Console.WriteLine("Foo invoked for {0}",s);
+	}
+}
+//调用
+string s="Hello";
+StringExtension.Foo(s);
+```
+
+```c#
+ static void ExtensionMethods()
+        {
+            var champions = new List<Racer>(Formulal.GetChampions());
+            IEnumerable<Racer> italyChampion = champions.Where(r => r.Country == "Italy").OrderByDescending(r => r.Wins).Select(r => r);
+            foreach (Racer  r in italyChampion)
+            {
+                Console.WriteLine("{0:A}", r);
+            }
+        }
+```
+
+- 推迟查询的执行
+
+  在运行期间定义查询表达式时，查询就不会运行，查询会在迭代数据项时运行
+
+  调用扩展方法（如ToArray()、ToList()方法等）会改变这个操作，这些操作执行后再增加值，集合中会增加值但是查询结果不变
+
+#### 标准的查询操作符
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\11-1-1.png)
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\11-1-2.png)
+
+![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\11-1-3.png)
+
+> 示例： Chap11.DataLib

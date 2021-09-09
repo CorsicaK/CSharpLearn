@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chap10.ImmutableCollectionsSample
+namespace Chap10.PipelineSample
 {
     public class ConsoleHelper
     {
