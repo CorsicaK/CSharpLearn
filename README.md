@@ -2661,3 +2661,207 @@ StringExtension.Foo(s);
 ![](G:\zhl\GIS开发资料\CSharpLearn\CSharpLearn\image\11-1-3.png)
 
 > 示例： Chap11.DataLib
+
+#### 并行LINQ
+
+##### 并行查询
+
+> AsParallel()方法：ParallelEnumerable/Program.cs
+
+多个线程同时处理该查询
+
+##### 分区器
+
+Partitioner类命名空间：System.Collections.Concurrent
+
+> ParallelEnumerable/Program.cs
+
+##### 取消
+
+取消长时间运行的查询：WithCancellation(token)方法，该token令牌为CancellationToken令牌，在主线程中调用CancellationTokenSource类的Cancel()方法可以取消任务
+
+> ParallelEnumerable/Program.cs
+
+#### 表达式树
+
+继承自Expression类的表达式类有BinaryExpression、ConstantExpression、InvocationExpression、LambdaExpression、NewExpression、NewArrayExpression、TernaryExpression、UnaryExpression等
+
+> ParallelEnumerable/Program.cs
+
+#### LINQ提供程序 
+
+
+
+
+
+## 动态语言扩展DLR
+
+<font color=red> DLR是添加到CLR的一系列服务，如Ruby和Python</font>
+
+DLR位于System.Dynamic命名空间和System.Runtime.ComplierServices命名空间的几个类中
+
+#### dynamic类型
+
+- dynamic类型允许编写忽略编译期间的类型检查代码。
+
+- 动态对象的类型可以多次改变
+
+  ```C#
+  dynamic cyn;
+  cyn=100;
+  cyn ="This is a string";
+  ```
+
+- dynamic类型的限制
+
+  - 动态对象<font color=green>不支持扩展方法</font>
+  - 匿名函数（lambda表达式）不能用作动态方法调用的参数，<font color =green>LINQ不能用于动态对象</font>
+
+#### 包含DLR ScriptRuntime
+
+> 使用动态类型简化工作示例：《C#高级编程》Page326-328
+
+#### DynamicObject 和ExpandoObject
+
+<font color=red> 创建自己的动态对象</font>
+
+##### DynamicObject:必须重写几个方法
+
+适用情况：要在运行期间构建对象且系统实现不知道该对象有什么属性或该对象可以支持什么方法
+
+> 示例：DynamicSample/WroxDynamicObject.cs 、Program.cs
+
+##### ExpandoObject:不必重写方法
+
+> 示例：DynamicSample/Program.cs
+
+
+
+
+
+## 异步编程
+
+<font color=red> async 和 await</font>关键字
+
+#### 异步模式
+
+```c#
+///基于任务的异步模式
+private async void OnTaskBasedAsyncPattern(object sender, RoutedEventArgs e)
+{
+	foreach(var req in GetSearchRequests())
+	{
+		var client = new WebClient();
+		client.Credentials=req.Gredentials;
+		string resp=await client.DownloadStringTaskAsync(req.Url);
+		
+		IEnumerable<SearchItemResult> images =req.Parse(resp);
+		foreach(var image in images)
+		{
+			searchInfo.List.Add(image);
+		}
+	}
+}
+```
+
+- 利用同步功能创建<font color=blue>后台</font>任务，可以使用<font color=red>Task.Run方法</font>
+
+  ```c#
+  await Task.Run(()=>
+  {
+  	//方法体
+  })
+  ```
+
+#### 异步编程的基础
+
+##### 创建任务
+
+基于任务的异步模式指定，在异步方法名后面加上Async后缀并返回一个任务
+
+> AsyncAwaitSample/Program.cs中<创建任务>部分
+
+##### 调用异步方法
+
+- 可以使用<font color =red>await</font>关键字来调用返回任务的异步方法，需要用<font color=red>async</font>修饰符声明方法
+
+- 如果异步方法的结果不传递给变量，可以直接在参数中使用<font color=red>await</font>关键字
+
+- <font color=red>async</font>修饰符只能用于返回<font color=red>Task或void</font>的方法，它不能用于程序的入口点，即Main方法不能用async修饰符，<font color=red>await只能用于返回Task的方法</font>
+
+##### 延续任务
+
+Task类的ContinueWith方法定义了任务完成后就调用的代码，指派给ContinueWith方法的委托接收将已完成的任务作为参数传入，使用Result属性可以访问任务返回的结果
+
+##### 使用多个异步方法
+
+- 按顺序调用异步方法
+
+使用<font color=red>await</font>关键字可以调用每个异步方法，如果一个异步方法依赖于另一个异步方法的<font color=blue>结果</font>,await关键字非常有用
+
+- 使用组合器
+
+如果<font color=blue>异步方法不依赖于其他异步方法</font>，每个异步方法都不使用await，而是把每个异步方法的返回结果赋值给<font color=red>Task</font>变量，就会运行得更快
+
+Task类定义了<font color=red>WhenAll和WhenAny组合器</font>,WhenAll方法返回的Task是在所有传入方法的任务都完成了才会返回Task。从WhenAny方法返回的Task是在其中一个传入方法的任务完成
+了就会返回Task。
+
+##### 转换异步模式
+
+
+
+
+
+## 内存管理与指针
+
+System.GC.Collect()
+
+#### 释放非托管的资源
+
+- 析构函数
+
+  `~xxx()`
+
+  C#析构函数的实现会延迟对象最终从内存中删除的时间，有析构函数的对象需要两次垃圾回收器的处理才能销毁
+
+- 在类中实现System.IDisposable接口
+
+  <font color=red>推荐使用该接口来代替析构函数</font>,IDisposable接口定义了一种模式为释放非托管的资源提供了确定的机制，并避免产生析构函数固有的与垃圾回收器相关的问题
+
+  ```c#
+  class MyClass:IDisposable
+  {
+  	public void Dispose()
+  	{
+  		//
+  	}
+  }
+  
+  //使用，为避免处理中出现异常，硬写入try catch中
+  MyClass theInstance=null;
+  try
+  {
+      theInstance = new MyClass();
+      //do some processing
+  }
+  finally
+  {
+      if(theInstance != null)
+      {
+          theInstance.Dispose();
+  	}
+  }
+  
+  //为防止总是重复上诉try finally（易混淆），可使用using关键字
+  using(MyClass theInstance=new MyClass())
+  {
+      //do some processing
+  }
+  ```
+
+  - using语句后面圆括号中是<font color=red>引用变量的声明和实例化</font>，该语句使变量的作用域限定子啊随后的语句块中。在变量超出作用域时，即使出现异常也会自动调用其Dispose()方法
+
+  - IDisposable接口实现了独立的Close()方法，该方法只调用Dispose()方法
+
+最好的办法：<font color=purple>双重实现</font>
+
